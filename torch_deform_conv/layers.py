@@ -15,6 +15,7 @@ class ConvOffset2D(nn.Conv2d):
 
     Note that this layer does not perform convolution on the deformed feature
     map. See get_deform_cnn in cnn.py for usage
+    Gallus: According to paper: first convolution than sample pixels from deformed positions.
     """
     def __init__(self, filters, init_normal_stddev=0.01, **kwargs):
         """Init
@@ -36,9 +37,9 @@ class ConvOffset2D(nn.Conv2d):
     def forward(self, x):
         """Return the deformed featured map"""
         x_shape = x.size()
-        offsets = super(ConvOffset2D, self).forward(x)
+        offsets = super(ConvOffset2D, self).forward(x) #Gallus: perform normal convolution on 2D featuremap
 
-        # offsets: (b*c, h, w, 2)
+        # offsets: (b*c, h, w, 2) Gallus: why 2? 
         offsets = self._to_bc_h_w_2(offsets, x_shape)
 
         # x: (b*c, h, w)
